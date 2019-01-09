@@ -9,12 +9,14 @@ module.exports = {
     // Feb 06 2018
 
     const origin = 'YUL';
-    const destination = 'LAX';
+    const destination = 'YYZ';
     const flightNum = '3543';
     const time = '06:30';
     const date = '2019-02-06';
 
     const url = `https://www.westjet.com/booking/Create.html?lang=en&type=search&origin=${origin}&destination=${destination}&adults=1&children=0&infants=0&outboundDate=${date}&returnDate=&currency=CAD`;
+
+    const seats = [];
 
     console.log(url);
 
@@ -130,11 +132,76 @@ module.exports = {
       .waitForElementVisible(
         `//div[text()[contains(.,'${time}')]]/../../../div[@class='fullDetails']`,
       )
+      .useCss()
+      .waitForElementNotVisible('#interstitial')
+      .useXpath()
       .click(
         `//div[text()[contains(.,'${time}')]]/../../../div[@class='fullDetails']`,
       )
-      .useCss();
+      .waitForElementVisible(`//li[text()[contains(.,'WS ${flightNum}')]]`)
+      .waitForElementVisible(
+        `//li[text()[contains(.,'WS ${flightNum}')]]/../../../../../../../../div[contains(@class, "flightsSummaryRight")]/flight-details/div/div/fare-box[1]/div/div/div/div[2]/button`,
+      )
+      .click(
+        `//li[text()[contains(.,'WS ${flightNum}')]]/../../../../../../../../div[contains(@class, "flightsSummaryRight")]/flight-details/div/div/fare-box[1]/div/div/div/div[2]/button`,
+      )
+      .waitForElementVisible('//*[@id="EconoAccept"]')
+      .click('//*[@id="EconoAccept"]')
+      .waitForElementVisible('//div[@class="od-continue"]')
+      .waitForElementVisible('//div[contains(@class, "od-continue")]/button')
+      .pause(6000)
+      .click('//div[contains(@class, "od-continue")]/button')
+      .pause(3000)
+      .click('//*[@id="btn-skip-sign-in"]')
+      .pause(500)
+      .useCss()
+      .click('#adult-1-title option[value="MR"]')
+      .pause(100)
+      .setValue('#adult-1-firstName', 'John')
+      .pause(100)
+      .setValue('#adult-1-lastName', 'Doe')
+      .pause(100)
+      .setValue('#phone', '5134444444')
+      .pause(100)
+      .setValue('#email', 'philliprice006@gmail.com')
+      .pause(100)
+      .click('#continue')
+      .useXpath()
+      .waitForElementVisible('//h1[text()[contains(.,"Seat selection")]]')
+      .pause(1500);
 
-    browser.pause(10000).end();
+    browser.elements('xpath', '//div[contains(@class, "seat")]', result => {
+      console.log(result.value.length);
+      result.value.map(element => {
+        const id = element[Object.keys(element)[0]];
+        const seat = { seatNumber: null, price: null, available: true };
+
+        browser.elementIdAttribute(id, 'data-seatnum', seatNum => {
+          const { value } = seatNum;
+          if (value) {
+            seat.seatNumber = value;
+          }
+
+          browser.elementIdAttribute(id, 'class', seatClass => {
+            const { value } = seatClass;
+
+            if (value.includes('blocked') || value.includes('occupied')) {
+              seat.available = false;
+            }
+
+            if (seat.seatNumber) {
+              seats.push(seat);
+            }
+          });
+        });
+      });
+    });
+
+    browser.pause(1000, () => {
+      console.log(seats);
+      console.log(seats.length);
+    });
+
+    browser.end();
   },
 };
