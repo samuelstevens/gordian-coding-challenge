@@ -4,10 +4,6 @@ const shortTime = 200;
 
 module.exports = {
   'Get Demo Flight': browser => {
-    // JFK
-    // YUL
-    // Feb 06 2018
-
     const origin = 'YUL';
     const destination = 'YYZ';
     const flightNum = '3543';
@@ -149,7 +145,7 @@ module.exports = {
       .click('//*[@id="EconoAccept"]')
       .waitForElementVisible('//div[@class="od-continue"]')
       .waitForElementVisible('//div[contains(@class, "od-continue")]/button')
-      .pause(6000)
+      .pause(6000) // should just wait until '//div[contains(@class, "od-continue")]/button' is enabled (within classname)
       .click('//div[contains(@class, "od-continue")]/button')
       .pause(3000)
       .click('//*[@id="btn-skip-sign-in"]')
@@ -187,6 +183,19 @@ module.exports = {
 
             if (value.includes('blocked') || value.includes('occupied')) {
               seat.available = false;
+            } else {
+              browser.elementIdClick(id);
+
+              browser.execute(
+                function(data) {
+                  return document.getElementsByClassName('feePrice')[0]
+                    .innerText;
+                },
+                [],
+                result => {
+                  seat.price = result;
+                },
+              );
             }
 
             if (seat.seatNumber) {
