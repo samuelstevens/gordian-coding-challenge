@@ -67,6 +67,13 @@ From Stephen
 **URL**
 https://www.westjet.com/booking/Create.html?lang=en&type=search&origin=YUL&destination=LAX&adults=1&children=0&infants=0&outboundDate=2019-02-06&returnDate=&companionvoucher=false&iswestjetdollars=false&promo=&currency=CAD&caller=https%3A%2F%2Fwww.westjet.com%2Fen-ca%2Fbook-trip%2Fflight
 
+_uuids_
+
+- 64d0c039-07af
+- 679dba89-d3b1
+- 983806d1-4672
+- b15200a6-17ca
+
 **Output**
 
 - Print out all the seats on the plane

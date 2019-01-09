@@ -14,7 +14,7 @@ module.exports = {
     const time = '06:30';
     const date = '2019-02-06';
 
-    const url = `https://www.westjet.com/booking/Create.html?lang=en&type=search&origin=${origin}&destination=${destination}&adults=1&children=0&infants=0&outboundDate=${date}&returnDate=&companionvoucher=false&iswestjetdollars=false&promo=&currency=CAD&caller=https%3A%2F%2Fwww.westjet.com%2Fen-ca%2Fbook-trip%2Fflight`;
+    const url = `https://www.westjet.com/booking/Create.html?lang=en&type=search&origin=${origin}&destination=${destination}&adults=1&children=0&infants=0&outboundDate=${date}&returnDate=&currency=CAD`;
 
     console.log(url);
 
@@ -119,8 +119,22 @@ module.exports = {
 
     browser.pause(5000); */
 
-    browser.url(url).pause(longTime);
+    browser
+      .url(url)
+      .waitForElementPresent('#flightResultsPage')
+      .waitForElementPresent('#outboundSearchResultsContent')
+      .pause(5000);
 
-    browser.pause(5000).end();
+    browser
+      .useXpath()
+      .waitForElementVisible(
+        `//div[text()[contains(.,'${time}')]]/../../../div[@class='fullDetails']`,
+      )
+      .click(
+        `//div[text()[contains(.,'${time}')]]/../../../div[@class='fullDetails']`,
+      )
+      .useCss();
+
+    browser.pause(10000).end();
   },
 };
