@@ -1,6 +1,16 @@
 const Nightwatch = require('nightwatch');
 
-module.exports = { data: process.argv };
+const callback = seats => {
+  console.log(seats);
+};
+
+module.exports = {
+  origin: process.argv[2],
+  destination: process.argv[3],
+  flightNum: process.argv[4],
+  dateString: process.argv[5],
+  finalCallback: callback,
+};
 
 // read the CLI arguments
 Nightwatch.cli(function(argv) {

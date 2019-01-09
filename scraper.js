@@ -20,12 +20,12 @@
 
 module.exports = {
   'Get Demo Flight': browser => {
-    console.log(browser.globals);
     const { origin } = browser.globals; // YUL
     const { destination } = browser.globals; // YYZ
     const { flightNum } = browser.globals; // 3543
-    const time = '06:30';
-    const date = '2019-02-06';
+    const { dateString } = browser.globals; // 2019-02-06T06:30
+    const time = dateString.substr(11, 5); // 06:30
+    const date = dateString.substr(0, 10); // 2019-02-06
 
     const url = `https://www.westjet.com/booking/Create.html?lang=en&type=search&origin=${origin}&destination=${destination}&adults=1&children=0&infants=0&outboundDate=${date}&returnDate=&currency=CAD`;
 
@@ -211,7 +211,7 @@ module.exports = {
                 },
                 [],
                 result => {
-                  seat.price = result;
+                  seat.price = result.value;
                 },
               );
             }
@@ -225,7 +225,18 @@ module.exports = {
     });
 
     browser.pause(1000, () => {
-      console.log(seats);
+      browser.globals.finalCallback(seats);
+      seats.forEach(seat => {
+        if (seat.available) {
+          console.log(
+            `Seat ${seat.seatNumber} is available for an additional fee of ${
+              seat.price
+            }.`,
+          );
+        } else {
+          console.log(`Seat ${seat.seatNumber} is not available.`);
+        }
+      });
     });
 
     browser.end();
