@@ -18,15 +18,12 @@
 
 */
 
-const longTime = 1000;
-const mediumTime = 500;
-const shortTime = 200;
-
 module.exports = {
   'Get Demo Flight': browser => {
-    const origin = 'YUL';
-    const destination = 'YYZ';
-    const flightNum = '3543';
+    console.log(browser.globals);
+    const { origin } = browser.globals; // YUL
+    const { destination } = browser.globals; // YYZ
+    const { flightNum } = browser.globals; // 3543
     const time = '06:30';
     const date = '2019-02-06';
 
@@ -35,6 +32,7 @@ module.exports = {
     const seats = [];
 
     console.log(url);
+    console.log('');
 
     const clearKeyStrokes = Array(30);
     for (let i = 0; i < clearKeyStrokes.length; i++) {
@@ -43,7 +41,7 @@ module.exports = {
 
     /* browser
       .url('https://www.westjet.com/en-ca/book-trip/flight')
-      .pause(longTime)
+      .pause(1000)
       .maximizeWindow()
       .waitForElementPresent('body')
       .waitForElementPresent('#book-flight-form')
@@ -52,17 +50,17 @@ module.exports = {
       .getLocationInView('//*[@id="1528138409643"]/section/details/summary')
       .click('//*[@id="book-flight-form"]/div[7]') // click on origin
       .useCss()
-      .pause(mediumTime) // not a good selector
+      .pause(500) // not a good selector
       .setValue('#origin-search', clearKeyStrokes) // clear the default value
-      .pause(mediumTime)
+      .pause(500)
       .setValue('#origin-search', origin) // set to origin
       .useXpath()
       .waitForElementPresent('//*[@id="origin-picker"]/span/div/div/li')
       .click('//*[@id="origin-picker"]/span/div/div/li') // choose the first value
       .useCss()
-      .pause(mediumTime)
+      .pause(500)
       .setValue('#destination-search', clearKeyStrokes) // clear the default value
-      .pause(longTime)
+      .pause(1000)
       .setValue('#destination-search', 'L')
       .pause(50)
       .setValue('#destination-search', 'A')
@@ -73,7 +71,7 @@ module.exports = {
       .waitForElementPresent('//*[@id="destination-picker"]/span/div/div/li')
       .click('//*[@id="destination-picker"]/span/div/div/li')
       .useCss()
-      .pause(mediumTime);
+      .pause(500);
 
     browser
       .click('#depart')
@@ -94,7 +92,7 @@ module.exports = {
           );
         });
       });
-    browser.pause(longTime * 4);
+    browser.pause(1000 * 4);
 
     browser.useXpath();
 
@@ -228,7 +226,6 @@ module.exports = {
 
     browser.pause(1000, () => {
       console.log(seats);
-      console.log(seats.length);
     });
 
     browser.end();
