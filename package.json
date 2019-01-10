@@ -1,0 +1,25 @@
+{
+  "name": "gordian-coding-challenge",
+  "version": "1.0.0",
+  "description": "## Configuring the Environment",
+  "main": "wrapper.js",
+  "dependencies": {
+    "chromedriver": "^2.45.0",
+    "geckodriver": "^1.14.1",
+    "nightwatch": "^1.0.18"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samuelstevens/gordian-coding-challenge.git"
+  },
+  "author": "Samuel Stevens",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/samuelstevens/gordian-coding-challenge/issues"
+  },
+  "homepage": "https://github.com/samuelstevens/gordian-coding-challenge#readme"
+}
