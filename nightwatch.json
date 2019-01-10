@@ -1,5 +1,6 @@
 {
   "globals_path": "./wrapper.js",
+  "output": false,
   "webdriver": {
     "start_process": true,
     "server_path": "./bin/geckodriver",

@@ -39,8 +39,7 @@ module.exports = {
 
     const seats = [];
 
-    console.log(url);
-    console.log('');
+    // console.log(url);
 
     const clearKeyStrokes = Array(30);
     for (let i = 0; i < clearKeyStrokes.length; i++) {
