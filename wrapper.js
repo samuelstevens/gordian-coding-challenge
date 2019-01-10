@@ -1,7 +1,18 @@
 const Nightwatch = require('nightwatch');
 
 const callback = seats => {
-  console.log(seats);
+  // Can make any call here with the seats object
+  seats.forEach(seat => {
+    if (seat.available) {
+      console.log(
+        `Seat ${seat.seatNumber} is available for an additional fee of ${
+          seat.price
+        }.`,
+      );
+    } else {
+      console.log(`Seat ${seat.seatNumber} is not available.`);
+    }
+  });
 };
 
 module.exports = {

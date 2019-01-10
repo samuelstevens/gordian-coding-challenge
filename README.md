@@ -16,6 +16,10 @@ The wrapper file requires command line arguments to run properly, and in a speci
 
 ```bash
 node wrapper.js YUL YYZ 3543 2019-02-06T06:30
+
+node wrapper.js YYZ LAX 1100 2019-02-06T09:45
+
+node wrapper.js MCO YYZ 1227 2019-01-10T21:25
 ```
 
 **Format**

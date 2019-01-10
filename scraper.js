@@ -24,7 +24,15 @@ module.exports = {
     const { destination } = browser.globals; // YYZ
     const { flightNum } = browser.globals; // 3543
     const { dateString } = browser.globals; // 2019-02-06T06:30
-    const time = dateString.substr(11, 5); // 06:30
+    let time = dateString.substr(11, 5);
+    // For some reason, WestJet uses 24 hour time (Canadian?)
+    // if (Number(dateString.substr(11, 2)) > 12) {
+    //   time = `${Number(dateString.substr(11, 2)) - 12}:${dateString.substr(
+    //     14,
+    //     2,
+    //   )}`;
+    // }
+
     const date = dateString.substr(0, 10); // 2019-02-06
 
     const url = `https://www.westjet.com/booking/Create.html?lang=en&type=search&origin=${origin}&destination=${destination}&adults=1&children=0&infants=0&outboundDate=${date}&returnDate=&currency=CAD`;
@@ -39,109 +47,13 @@ module.exports = {
       clearKeyStrokes[i] = browser.Keys.BACK_SPACE;
     }
 
-    /* browser
-      .url('https://www.westjet.com/en-ca/book-trip/flight')
-      .pause(1000)
-      .maximizeWindow()
-      .waitForElementPresent('body')
-      .waitForElementPresent('#book-flight-form')
-      .waitForElementPresent('#origin-search')
-      .useXpath()
-      .getLocationInView('//*[@id="1528138409643"]/section/details/summary')
-      .click('//*[@id="book-flight-form"]/div[7]') // click on origin
-      .useCss()
-      .pause(500) // not a good selector
-      .setValue('#origin-search', clearKeyStrokes) // clear the default value
-      .pause(500)
-      .setValue('#origin-search', origin) // set to origin
-      .useXpath()
-      .waitForElementPresent('//*[@id="origin-picker"]/span/div/div/li')
-      .click('//*[@id="origin-picker"]/span/div/div/li') // choose the first value
-      .useCss()
-      .pause(500)
-      .setValue('#destination-search', clearKeyStrokes) // clear the default value
-      .pause(1000)
-      .setValue('#destination-search', 'L')
-      .pause(50)
-      .setValue('#destination-search', 'A')
-      .pause(50)
-      .setValue('#destination-search', 'X')
-      .pause(50)
-      .useXpath()
-      .waitForElementPresent('//*[@id="destination-picker"]/span/div/div/li')
-      .click('//*[@id="destination-picker"]/span/div/div/li')
-      .useCss()
-      .pause(500);
-
-    browser
-      .click('#depart')
-      .waitForElementVisible('#depart-picker')
-      .pause(1000)
-      .waitForElementVisible('#depart-picker')
-      .pause(1000)
-      .elements('css selector', '.dw-cal-day-fg', result => {
-        result.value.map((element, err) => {
-          browser.elementIdAttribute(
-            element.ELEMENT,
-            'innerText',
-            attribute => {
-              if (attribute.value == day) {
-                browser.elementIdClick(element.ELEMENT);
-              }
-            },
-          );
-        });
-      });
-    browser.pause(1000 * 4);
-
-    browser.useXpath();
-
-    browser.getAttribute(
-      '//*[@id="mobile-submit"]/div/input',
-      'class',
-      result => {
-        console.log(result);
-
-        if (result.value === 'tab-panel-exit-control') {
-          browser.click('//*[@id="mobile-submit"]/div').useCss();
-        }
-      },
-    );
-    browser.getAttribute(
-      '//*[@id="tablet-submit"]/div/input',
-      'class',
-      result => {
-        console.log(result);
-
-        if (result.value === 'tab-panel-exit-control') {
-          browser.click('//*[@id="tablet-submit"]/div').useCss();
-        }
-      },
-    );
-    browser.getAttribute(
-      '//*[@id="desktop-submit"]/div/input',
-      'class',
-      result => {
-        console.log(result);
-
-        if (result.value === 'tab-panel-exit-control') {
-          browser.click('//*[@id="desktop-submit"]/div').useCss();
-        }
-      },
-    );
-    browser.click('//*[@id="desktop-submit"]');
-    browser.click('//*[@id="mobile-submit"]');
-    browser.click('//*[@id="tablet-submit"]');
-
-    browser.pause(5000); */
+    let birthdayRequired = null;
 
     browser
       .url(url)
       .waitForElementPresent('#flightResultsPage')
       .waitForElementPresent('#outboundSearchResultsContent')
-      .pause(5000);
-
-    browser
+      .pause(5000)
       .useXpath()
       .waitForElementVisible(
         `//div[text()[contains(.,'${time}')]]/../../../div[@class='fullDetails']`,
@@ -162,83 +74,96 @@ module.exports = {
       .waitForElementVisible('//*[@id="EconoAccept"]')
       .click('//*[@id="EconoAccept"]')
       .waitForElementVisible('//div[@class="od-continue"]')
-      .waitForElementVisible('//div[contains(@class, "od-continue")]/button')
-      .pause(6000) // should just wait until '//div[contains(@class, "od-continue")]/button' is enabled (within classname)
+      .waitForElementVisible('//div[@class="od-continue"]/button')
+      .pause(5000)
       .click('//div[contains(@class, "od-continue")]/button')
-      .pause(3000)
+      .useCss()
+      .waitForElementVisible('#div-sign-in-header')
+      .useXpath()
       .click('//*[@id="btn-skip-sign-in"]')
       .pause(500)
       .useCss()
       .click('#adult-1-title option[value="MR"]')
-      .pause(100)
       .setValue('#adult-1-firstName', 'John')
-      .pause(100)
-      .setValue('#adult-1-lastName', 'Doe')
-      .pause(100)
-      .setValue('#phone', '5134444444')
-      .pause(100)
-      .setValue('#email', 'philliprice006@gmail.com')
-      .pause(100)
-      .click('#continue')
-      .useXpath()
-      .waitForElementVisible('//h1[text()[contains(.,"Seat selection")]]')
-      .pause(1500);
+      .setValue('#adult-1-lastName', 'Doe');
 
-    browser.elements('xpath', '//div[contains(@class, "seat")]', result => {
-      console.log(result.value.length);
-      result.value.map(element => {
-        const id = element[Object.keys(element)[0]];
-        const seat = { seatNumber: null, price: null, available: true };
+    browser.useXpath().isVisible('//div[@class="secure-flight"]', result => {
+      birthdayRequired = result.value;
 
-        browser.elementIdAttribute(id, 'data-seatnum', seatNum => {
-          const { value } = seatNum;
-          if (value) {
-            seat.seatNumber = value;
-          }
+      browser.useCss();
 
-          browser.elementIdAttribute(id, 'class', seatClass => {
-            const { value } = seatClass;
+      if (birthdayRequired) {
+        browser
+          .click('#adult-1-day option[value="1"]')
+          .click('#adult-1-month option[value="1"]')
+          .click('#adult-1-year option[value="1980"]');
+      }
 
-            if (value.includes('blocked') || value.includes('occupied')) {
-              seat.available = false;
-            } else {
-              browser.elementIdClick(id);
+      browser
+        .setValue('#phone', '5134444444')
+        // .pause(100)
+        .setValue('#email', 'philliprice006@gmail.com')
+        // .pause(100)
+        .click('#continue')
+        .useXpath()
+        .waitForElementVisible('//h1[text()[contains(.,"Seat selection")]]')
+        .pause(1500);
 
-              browser.execute(
-                function(data) {
-                  return document.getElementsByClassName('feePrice')[0]
-                    .innerText;
-                },
-                [],
-                result => {
-                  seat.price = result.value;
-                },
-              );
+      browser.elements('xpath', '//div[contains(@class, "seat")]', result => {
+        console.log(result.value.length);
+        result.value.map(element => {
+          const id = element[Object.keys(element)[0]];
+          const seat = { seatNumber: null, price: null, available: true };
+
+          browser.elementIdAttribute(id, 'data-seatnum', seatNum => {
+            const { value } = seatNum;
+            if (value) {
+              seat.seatNumber = value;
             }
 
-            if (seat.seatNumber) {
-              seats.push(seat);
-            }
+            browser.elementIdAttribute(id, 'class', seatClass => {
+              const { value } = seatClass;
+
+              if (
+                value.includes('blocked') ||
+                value.includes('occupied') ||
+                value.includes('noseat') ||
+                value.includes('lavatory')
+              ) {
+                seat.available = false;
+              } else {
+                browser.elementIdClick(id);
+
+                if (value.includes('exit')) {
+                  // need to click out of popup
+                  browser.useCss().click('#exitRowSeatLightbox0');
+                }
+
+                browser.execute(
+                  function(data) {
+                    return document.getElementsByClassName('feePrice')[0]
+                      .innerText;
+                  },
+                  [],
+                  result => {
+                    seat.price = result.value;
+                  },
+                );
+              }
+
+              if (seat.seatNumber) {
+                seats.push(seat);
+              }
+            });
           });
         });
       });
-    });
 
-    browser.pause(1000, () => {
-      browser.globals.finalCallback(seats);
-      seats.forEach(seat => {
-        if (seat.available) {
-          console.log(
-            `Seat ${seat.seatNumber} is available for an additional fee of ${
-              seat.price
-            }.`,
-          );
-        } else {
-          console.log(`Seat ${seat.seatNumber} is not available.`);
-        }
+      browser.pause(1000, () => {
+        browser.globals.finalCallback(seats);
       });
-    });
 
-    browser.end();
+      browser.end();
+    });
   },
 };
