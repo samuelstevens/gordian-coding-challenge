@@ -1,4 +1,4 @@
-# Read Me
+# Getting WestJet Flight Information
 
 ## Configuring the Environment
 

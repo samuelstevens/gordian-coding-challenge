@@ -19,7 +19,7 @@
 */
 
 module.exports = {
-  'Get Demo Flight': browser => {
+  'Get Flight': browser => {
     const { origin } = browser.globals; // YUL
     const { destination } = browser.globals; // YYZ
     const { flightNum } = browser.globals; // 3543
