@@ -8,6 +8,8 @@ cd gordian-coding-challenge
 npm install
 ```
 
+Firefox is required to run the browser automation tool. It is entirely free and can be downloaded [here](https://www.mozilla.org/en-US/firefox/new/).
+
 ## Running the Program
 
 The wrapper file requires command line arguments to run properly, and in a specific order.
