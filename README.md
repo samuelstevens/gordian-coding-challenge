@@ -5,7 +5,7 @@
 ```bash
 git clone https://github.com/samuelstevens/gordian-coding-challenge.git
 cd gordian-coding-challenge
-npm install # automatically installs dev dependencies
+npm install
 ```
 
 ## Running the Program
